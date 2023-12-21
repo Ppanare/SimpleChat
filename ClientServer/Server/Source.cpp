@@ -47,6 +47,7 @@ int main() {
  WSADATA WSAData; //Данные 
  SOCKET server, client; //Сокеты сервера и клиента
  SOCKADDR_IN serverAddr, clientAddr; //Адреса сокетов
+ int portAdress = 0;
  WSAStartup(MAKEWORD(2, 0), &WSAData);
  server = socket(AF_INET, SOCK_STREAM, 0); //Создали сервер
  if (server == INVALID_SOCKET) {
@@ -55,7 +56,10 @@ int main() {
  }
  serverAddr.sin_addr.s_addr = INADDR_ANY;
  serverAddr.sin_family = AF_INET;
- serverAddr.sin_port = htons(5555);
+ cout << "Input number of socket" << endl;
+ int socketNumber = 0;
+ std::cin >> socketNumber;
+ serverAddr.sin_port = htons(socketNumber);
  if (bind(server, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
   cout << "Bind function failed with error: " << WSAGetLastError() << endl;
   return -1;

@@ -54,7 +54,10 @@ int main() {
  
  addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //коннект к серверу
  addr.sin_family = AF_INET;
- addr.sin_port = htons(5555); //порт
+ cout << "Input number of socket" << endl;
+ int socketNumber = 0;
+ std::cin >> socketNumber;
+ addr.sin_port = htons(socketNumber);
  if (connect(server, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR) {
   cout << "Server connection failed with error: " << WSAGetLastError() << endl;
   return -1;
