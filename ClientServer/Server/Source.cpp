@@ -1,4 +1,5 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#pragma execution_character_set("utf-8")
 #include <iostream> 
 #include <cstdio> 
 #include <cstring> 
@@ -6,26 +7,26 @@
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
 
-DWORD WINAPI serverReceive(LPVOID lpParam) { //РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РѕС‚ РєР»РёРµРЅС‚Р°
- char buffer[1024] = { 0 }; //Р‘СѓС„РµСЂ РґР»СЏ РґР°РЅРЅС‹С…
- SOCKET client = *(SOCKET*)lpParam; //РЎРѕРєРµС‚ РґР»СЏ РєР»РёРµРЅС‚Р°
- while (true) { //Р¦РёРєР» СЂР°Р±РѕС‚С‹ СЃРµСЂРІРµСЂР°
+DWORD WINAPI serverReceive(LPVOID lpParam) { //Получение данных от клиента
+ char buffer[1024] = { 0 }; //Буфер для данных
+ SOCKET client = *(SOCKET*)lpParam; //Сокет для клиента
+ while (true) { //Цикл работы сервера
   if (recv(client, buffer, sizeof(buffer), 0) == SOCKET_ERROR) {
-    //Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ Р±СѓС„РµСЂР°, СЃРѕРѕР±С‰РёС‚СЊ РѕР± РѕС€РёР±РєРµ Рё РІС‹Р№С‚Рё
+   //Если не удалось получить данные буфера, сообщить об ошибке и выйти
    cout << "recv function failed with error " << WSAGetLastError() << endl;
    return -1;
   }
-  if (strcmp(buffer, "exit\n") == 0) { //Р•СЃР»Рё РєР»РёРµРЅС‚ РѕС‚СЃРѕРµРґРёРЅРёР»СЃСЏ
+  if (strcmp(buffer, "exit\n") == 0) { //Если клиент отсоединился
    cout << "Client Disconnected." << endl;
    break;
   }
-  cout << "Client: " << buffer << endl; //РРЅР°С‡Рµ РІС‹РІРµСЃС‚Рё СЃРѕРѕР±С‰РµРЅРёРµ РѕС‚ РєР»РёРµРЅС‚Р° РёР· Р±СѓС„РµСЂР°
-  memset(buffer, 0, sizeof(buffer)); //РћС‡РёСЃС‚РёС‚СЊ Р±СѓС„РµСЂ
+  cout << "Client: " << buffer << endl; //Иначе вывести сообщение от клиента из буфера
+  memset(buffer, 0, sizeof(buffer)); //Очистить буфер
  }
  return 1;
 }
 
-DWORD WINAPI serverSend(LPVOID lpParam) { //РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С… РєР»РёРµРЅС‚Сѓ
+DWORD WINAPI serverSend(LPVOID lpParam) { //Отправка данных клиенту
  char buffer[1024] = { 0 };
  SOCKET client = *(SOCKET*)lpParam;
  while (true) {
@@ -43,11 +44,11 @@ DWORD WINAPI serverSend(LPVOID lpParam) { //РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С… РєР»Рё
 }
 
 int main() {
- WSADATA WSAData; //Р”Р°РЅРЅС‹Рµ 
- SOCKET server, client; //РЎРѕРєРµС‚С‹ СЃРµСЂРІРµСЂР° Рё РєР»РёРµРЅС‚Р°
- SOCKADDR_IN serverAddr, clientAddr; //РђРґСЂРµСЃР° СЃРѕРєРµС‚РѕРІ
+ WSADATA WSAData; //Данные 
+ SOCKET server, client; //Сокеты сервера и клиента
+ SOCKADDR_IN serverAddr, clientAddr; //Адреса сокетов
  WSAStartup(MAKEWORD(2, 0), &WSAData);
- server = socket(AF_INET, SOCK_STREAM, 0); //РЎРѕР·РґР°Р»Рё СЃРµСЂРІРµСЂ
+ server = socket(AF_INET, SOCK_STREAM, 0); //Создали сервер
  if (server == INVALID_SOCKET) {
   cout << "Socket creation failed with error:" << WSAGetLastError() << endl;
   return -1;
@@ -60,25 +61,25 @@ int main() {
   return -1;
  }
 
- if (listen(server, 0) == SOCKET_ERROR) { //Р•СЃР»Рё РЅРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ Р·Р°РїСЂРѕСЃ
+ if (listen(server, 0) == SOCKET_ERROR) { //Если не удалось получить запрос
   cout << "Listen function failed with error:" << WSAGetLastError() << endl;
   return -1;
  }
  cout << "Listening for incoming connections...." << endl; 
 
- char buffer[1024];//РЎРѕР·РґР°С‚СЊ Р±СѓС„РµСЂ РґР»СЏ РґР°РЅРЅС‹С…
- int clientAddrSize = sizeof(clientAddr); //РРЅРёС†РёР°Р»РёР·РёСЂРѕРІР°С‚СЊ Р°РґРµСЂСЃ РєР»РёРµРЅС‚Р°
+ char buffer[1024]; //Создать буфер для данных
+ int clientAddrSize = sizeof(clientAddr); //Инициализировать адерс клиента
  if ((client = accept(server, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
-//Р•СЃР»Рё СЃРѕРµРґРёРЅРµРЅРёРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРѕ
+  //Если соединение установлено
   cout << "Client connected!" << endl;
   cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" << endl;
 
-  DWORD tid; //РРґРµРЅС‚РёС„РёРєР°С‚РѕСЂ
-  HANDLE t1 = CreateThread(NULL, 0, serverReceive, &client, 0, &tid); //РЎРѕР·РґР°РЅРёРµ РїРѕС‚РѕРєР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ РґР°РЅРЅС‹С…
-  if (t1 == NULL) { //РћС€РёР±РєР° СЃРѕР·РґР°РЅРёСЏ РїРѕС‚РѕРєР°
+  DWORD tid; //Идентификатор
+  HANDLE t1 = CreateThread(NULL, 0, serverReceive, &client, 0, &tid); //Создание потока для получения данных
+  if (t1 == NULL) { //Ошибка создания потока
    cout << "Thread Creation Error: " << WSAGetLastError() << endl;
   }
-  HANDLE t2 = CreateThread(NULL, 0, serverSend, &client, 0, &tid);//РЎРѕР·РґР°РЅРёРµ РїРѕС‚РѕРєР° РґР»СЏ РѕС‚РїСЂР°РІРєРё РґР°РЅРЅС‹С…
+  HANDLE t2 = CreateThread(NULL, 0, serverSend, &client, 0, &tid); //Создание потока для отправки данных
   if (t2 == NULL) {
    cout << "Thread Creation Error: " << WSAGetLastError() << endl;
   }
@@ -86,8 +87,8 @@ int main() {
   WaitForSingleObject(t1, INFINITE);
   WaitForSingleObject(t2, INFINITE);
 
-  closesocket(client); //Р—Р°РєСЂС‹С‚СЊ СЃРѕРєРµС‚
-  if (closesocket(server) == SOCKET_ERROR) { //РћС€РёР±РєР° Р·Р°РєСЂС‹С‚РёСЏ СЃРѕРєРµС‚Р°
+  closesocket(client); //Закрыть сокет
+  if (closesocket(server) == SOCKET_ERROR) { //Ошибка закрытия сокета
    cout << "Close socket failed with error: " << WSAGetLastError() << endl;
    return -1;
   }

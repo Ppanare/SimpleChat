@@ -1,4 +1,5 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
+#pragma execution_character_set("utf-8")
 #include <iostream> 
 #include <cstdio> 
 #include <cstring> 
@@ -6,7 +7,7 @@
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
 
-DWORD WINAPI clientReceive(LPVOID lpParam) {//РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… РѕС‚ СЃРµСЂРІРµСЂР°
+DWORD WINAPI clientReceive(LPVOID lpParam) { //Получение данных от сервера
  char buffer[1024] = { 0 };
  SOCKET server = *(SOCKET*)lpParam;
  while (true) {
@@ -24,7 +25,7 @@ DWORD WINAPI clientReceive(LPVOID lpParam) {//РџРѕР»СѓС‡РµРЅРёРµ РґР°РЅРЅС‹С… Рѕ
  return 1;
 }
 
-DWORD WINAPI clientSend(LPVOID lpParam) { //РћС‚РїСЂР°РІРєР° РґР°РЅРЅС‹С… РЅР° СЃРµСЂРІРµСЂ
+DWORD WINAPI clientSend(LPVOID lpParam) { //Отправка данных на сервер
  char buffer[1024] = { 0 };
  SOCKET server = *(SOCKET*)lpParam;
  while (true) {
@@ -51,9 +52,9 @@ int main() {
   return -1;
  }
  
- addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //РєРѕРЅРЅРµРєС‚ Рє СЃРµСЂРІРµСЂСѓ
+ addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //коннект к серверу
  addr.sin_family = AF_INET;
- addr.sin_port = htons(5555); //РїРѕСЂС‚
+ addr.sin_port = htons(5555); //порт
  if (connect(server, (SOCKADDR*)&addr, sizeof(addr)) == SOCKET_ERROR) {
   cout << "Server connection failed with error: " << WSAGetLastError() << endl;
   return -1;
