@@ -5,9 +5,23 @@
 #include <cstring> 
 #include <winsock2.h> 
 #include <fstream>
+#include <vector>
 
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
+
+
+void receiveFile(SOCKET socket) {
+    streamsize fileSize;
+    recv(socket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
+    vector<char> buffer(fileSize);
+    recv(socket, buffer.data(), fileSize, 0);
+    ofstream outputFile("received_file", std::ios::binary);
+    outputFile.write(buffer.data(), fileSize);
+
+}
+
+
 
 DWORD WINAPI serverReceive(LPVOID lpParam) { //Получение данных от клиента
  char buffer[1024] = { 0 }; //Буфер для данных
