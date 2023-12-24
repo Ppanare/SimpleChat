@@ -4,6 +4,8 @@
 #include <cstdio> 
 #include <cstring> 
 #include <winsock2.h> 
+#include <fstream>
+
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
 
