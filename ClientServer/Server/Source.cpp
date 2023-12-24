@@ -10,13 +10,31 @@
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
 
+void sendFile(const std::string& filePath, SOCKET socket) {
+	ifstream file(filePath, ios::binary | ios::ate);
+	if (!file.is_open()) {
+		cout << "Error i cannot open this file" << endl;
+		return;
+	}
+	streamsize fileSize = file.tellg();
+	file.seekg(0, ios::beg);
+	send(socket, reinterpret_cast<const char*>(&fileSize), sizeof(fileSize), 0);
+
+	vector<char> buffer(fileSize);
+	if (file.read(buffer.data(), fileSize)) {
+		send(socket, buffer.data(), fileSize, 0);
+	}
+	else {
+		cout << "FUCK" << endl;
+	}
+}
 
 void receiveFile(SOCKET socket) {
     streamsize fileSize;
     recv(socket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
     vector<char> buffer(fileSize);
     recv(socket, buffer.data(), fileSize, 0);
-    ofstream outputFile("received_file", std::ios::binary);
+    ofstream outputFile("received_file"/*сюда путь можно ебануть*/, std::ios::binary);
     outputFile.write(buffer.data(), fileSize);
 
 }

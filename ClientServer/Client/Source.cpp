@@ -30,6 +30,15 @@ void sendFile(const std::string& filePath, SOCKET socket) {
 	}
 }
 
+void receiveFile(SOCKET socket) {
+	streamsize fileSize;
+	recv(socket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
+	vector<char> buffer(fileSize);
+	recv(socket, buffer.data(), fileSize, 0);
+	ofstream outputFile("received_file"/*сюда путь можно ебануть*/, std::ios::binary);
+	outputFile.write(buffer.data(), fileSize);
+
+}
 
 DWORD WINAPI clientReceive(LPVOID lpParam) { //Получение данных от сервера
  char buffer[1024] = { 0 };
