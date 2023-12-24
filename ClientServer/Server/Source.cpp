@@ -7,8 +7,10 @@
 #include <fstream>
 #include <vector>
 
+
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
+
 
 void sendFile(const std::string& filePath, SOCKET socket) {
 	ifstream file(filePath, ios::binary | ios::ate);
@@ -34,7 +36,7 @@ void receiveFile(SOCKET socket) {
     recv(socket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
     vector<char> buffer(fileSize);
     recv(socket, buffer.data(), fileSize, 0);
-    ofstream outputFile("received_file"/*сюда путь можно ебануть*/, std::ios::binary);
+    ofstream outputFile("/fileTranzit/catched.txt"/*сюда путь можно ебануть*/, std::ios::binary);
     outputFile.write(buffer.data(), fileSize);
 
 }
@@ -54,6 +56,10 @@ DWORD WINAPI serverReceive(LPVOID lpParam) { //Получение данных от клиента
    cout << "Client Disconnected." << endl;
    break;
   }
+  if (strcmp(buffer, "send\n") == 0) {  //Если клиент отправляет сообщение
+	  receiveFile(client);
+  }
+  
   cout << "Client: " << buffer << endl; //Иначе вывести сообщение от клиента из буфера
   memset(buffer, 0, sizeof(buffer)); //Очистить буфер
  }
@@ -72,6 +78,10 @@ DWORD WINAPI serverSend(LPVOID lpParam) { //Отправка данных клиенту
   if (strcmp(buffer, "exit\n") == 0) {
    cout << "Thank you for using the application" << endl;
    break;
+  }
+  if (strcmp(buffer, "send\n") == 0) {
+	  cout << "Send file" << endl;
+	  sendFile("file.txt", client);
   }
  }
  return 1;
@@ -110,7 +120,7 @@ int main() {
  if ((client = accept(server, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
   //Если соединение установлено
   cout << "Client connected!" << endl;
-  cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" << endl;
+  cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" <<"\nOr type \"send\" to send file from TRANZIT_DIRECTORY" << endl; //-<
 
   DWORD tid; //Идентификатор
   HANDLE t1 = CreateThread(NULL, 0, serverReceive, &client, 0, &tid); //Создание потока для получения данных

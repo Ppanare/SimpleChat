@@ -35,7 +35,7 @@ void receiveFile(SOCKET socket) {
 	recv(socket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
 	vector<char> buffer(fileSize);
 	recv(socket, buffer.data(), fileSize, 0);
-	ofstream outputFile("received_file"/*сюда путь можно ебануть*/, std::ios::binary);
+	ofstream outputFile("received_file.txt"/*сюда путь можно ебануть*/, std::ios::binary);
 	outputFile.write(buffer.data(), fileSize);
 
 }
@@ -51,6 +51,10 @@ DWORD WINAPI clientReceive(LPVOID lpParam) { //ѕолучение данных от сервера
   if (strcmp(buffer, "exit\n") == 0) {
    cout << "Server disconnected." << endl;
    return 1;
+  }
+  if (strcmp(buffer, "send\n") == 0) {  //≈сли клиент отправл€ет сообщение
+	  cout << "catching message" << endl;
+	  receiveFile(server);
   }
   cout << "Server: " << buffer << endl;
   memset(buffer, 0, sizeof(buffer));
@@ -97,7 +101,7 @@ int main() {
  }
  
  cout << "Connected to server!" << endl;
- cout << "Now you can use our live chat application. "  << " Enter \"exit\" to disconnect" << endl;
+ cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" << "\nOr type \"send\" to send file from TRANZIT_DIRECTORY" << endl;
  
  DWORD tid;
  HANDLE t1 = CreateThread(NULL, 0, clientReceive, &server, 0, &tid);
