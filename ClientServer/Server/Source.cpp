@@ -126,7 +126,7 @@ int main() {
  if ((client = accept(server, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
   //Если соединение установлено
   cout << "Client connected! from "<<to_string(socketNumber)<< endl;
-  cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" <<"\nOr type \"send\" to send file from TRANZIT_DIRECTORY" << endl; //-<
+  cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" <<"\nOr type \"send\" to send file to TRANZIT_DIRECTORY" << endl; //-<
 
   DWORD tid; //Идентификатор
   HANDLE t1 = CreateThread(NULL, 0, serverReceive, &client, 0, &tid); //Создание потока для получения данных

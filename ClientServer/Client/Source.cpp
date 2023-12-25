@@ -109,7 +109,7 @@ cout<<"Input number of socket" << endl;
  }
  
  cout << "Connected to server!" << endl;
- cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" << "\nOr type \"send\" to send file from TRANZIT_DIRECTORY" << endl;
+ cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" << "\nOr type \"send\" to send file to TRANZIT_DIRECTORY" << endl;
  
  DWORD tid;
  HANDLE t1 = CreateThread(NULL, 0, clientReceive, &server, 0, &tid);
