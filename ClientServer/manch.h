@@ -1,4 +1,4 @@
-//áûëà çàäóìêà êîäèðîâàòü ñîîáùåíèå íî ÷åñòíî ãîâîðÿ ðóêè ïîêà ÷òî íå äîøëè
+
 namespace manch {
 	std::string Encode(const std::string& input) {
 		std::string encoded;
