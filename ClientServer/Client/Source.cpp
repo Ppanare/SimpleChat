@@ -41,7 +41,7 @@ void receiveFile(SOCKET socket) {
 
 }
 
-DWORD WINAPI clientReceive(LPVOID lpParam) { //Получение данных от сервера
+DWORD WINAPI clientReceive(LPVOID lpParam) { 
  char buffer[1024] = { 0 };
  SOCKET server = *(SOCKET*)lpParam;
  while (true) {
@@ -53,7 +53,7 @@ DWORD WINAPI clientReceive(LPVOID lpParam) { //Получение данных от сервера
    cout << "Server disconnected." << endl;
    return 1;
   }
-  if (strcmp(buffer, "send\n") == 0) {  //Если клиент отправляет сообщение
+  if (strcmp(buffer, "send\n") == 0) {  
 	  cout << "Catching file(SERVER)" << endl;
 	  receiveFile(server);
   }
@@ -63,7 +63,7 @@ DWORD WINAPI clientReceive(LPVOID lpParam) { //Получение данных от сервера
  return 1;
 }
 
-DWORD WINAPI clientSend(LPVOID lpParam) { //Отправка данных на сервер
+DWORD WINAPI clientSend(LPVOID lpParam) { 
  char buffer[1024] = { 0 };
  SOCKET server = *(SOCKET*)lpParam;
  while (true) {
@@ -94,7 +94,7 @@ int main() {
   return -1;
  }
  
- addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //коннект к серверу (локалхост)
+ addr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
  addr.sin_family = AF_INET;
  HANDLE colorConsole = GetStdHandle(STD_OUTPUT_HANDLE);
  SetConsoleTextAttribute(colorConsole, 3);

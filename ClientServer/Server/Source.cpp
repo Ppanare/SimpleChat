@@ -46,30 +46,30 @@ void receiveFile(SOCKET socket) {
 
 
 
-DWORD WINAPI serverReceive(LPVOID lpParam) { //Получение данных от клиента
- char buffer[1024] = { 0 }; //Буфер для данных
- SOCKET client = *(SOCKET*)lpParam; //Сокет для клиента
+DWORD WINAPI serverReceive(LPVOID lpParam) { 
+ char buffer[1024] = { 0 };
+ SOCKET client = *(SOCKET*)lpParam; 
  while (true) { //Цикл работы сервера
   if (recv(client, buffer, sizeof(buffer), 0) == SOCKET_ERROR) {
-   //Если не удалось получить данные буфера, сообщить об ошибке и выйти
+
    cout << "recv function failed with error " << WSAGetLastError() << endl;
    return -1;
   }
-  if (strcmp(buffer, "exit\n") == 0) { //Если клиент отсоединился
+  if (strcmp(buffer, "exit\n") == 0) {
    cout << "Client Disconnected." << endl;
    break;
   }
-  if (strcmp(buffer, "send\n") == 0) {  //Если клиент отправляет сообщение
+  if (strcmp(buffer, "send\n") == 0) { 
 	  cout << "Catching file(CLIENT)";
 	  receiveFile(client);
   }
-  cout <<"Client: " << buffer << endl; //Иначе вывести сообщение от клиента из буфера
-  memset(buffer, 0, sizeof(buffer)); //Очистить буфер
+  cout <<"Client: " << buffer << endl;
+  memset(buffer, 0, sizeof(buffer)); 
  }
  return 1;
 }
 
-DWORD WINAPI serverSend(LPVOID lpParam) { //Отправка данных клиенту
+DWORD WINAPI serverSend(LPVOID lpParam) { 
  char buffer[1024] = { 0 };
  SOCKET client = *(SOCKET*)lpParam;
  while (true) {
@@ -91,12 +91,12 @@ DWORD WINAPI serverSend(LPVOID lpParam) { //Отправка данных клиенту
 }
 
 int main() {
- WSADATA WSAData; //Данные 
- SOCKET server, client; //Сокеты сервера и клиента
- SOCKADDR_IN serverAddr, clientAddr; //Адреса сокетов
+ WSADATA WSAData;
+ SOCKET server, client; 
+ SOCKADDR_IN serverAddr, clientAddr; 
  int portAdress = 0;
  WSAStartup(MAKEWORD(2, 0), &WSAData);
- server = socket(AF_INET, SOCK_STREAM, 0); //Создали сервер
+ server = socket(AF_INET, SOCK_STREAM, 0); 
  if (server == INVALID_SOCKET) {
   cout << "Socket creation failed with error:" << WSAGetLastError() << endl;
   return -1;
@@ -116,25 +116,25 @@ int main() {
   return -1;
  }
 
- if (listen(server, 0) == SOCKET_ERROR) { //Если не удалось получить запрос
+ if (listen(server, 0) == SOCKET_ERROR) { 
   cout << "Listen function failed with error:" << WSAGetLastError() << endl;
   return -1;
  }
  cout << "Listening for incoming connections...." << endl; 
 
- char buffer[1024]; //Создать буфер для данных
- int clientAddrSize = sizeof(clientAddr); //Инициализировать адерс клиента
+ char buffer[1024];
+ int clientAddrSize = sizeof(clientAddr);
  if ((client = accept(server, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
-  //Если соединение установлено
+ 
   cout << "Client connected! from "<<to_string(socketNumber)<< endl;
-  cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" <<"\nOr type \"send\" to send file to TRANZIT_DIRECTORY" << endl; //-<
+  cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" <<"\nOr type \"send\" to send file to TRANZIT_DIRECTORY" << endl; 
 
-  DWORD tid; //Идентификатор
-  HANDLE t1 = CreateThread(NULL, 0, serverReceive, &client, 0, &tid); //Создание потока для получения данных
-  if (t1 == NULL) { //Ошибка создания потока
+  DWORD tid; 
+  HANDLE t1 = CreateThread(NULL, 0, serverReceive, &client, 0, &tid); 
+  if (t1 == NULL) {
    cout << "Thread Creation Error: " << WSAGetLastError() << endl;
   }
-  HANDLE t2 = CreateThread(NULL, 0, serverSend, &client, 0, &tid); //Создание потока для отправки данных
+  HANDLE t2 = CreateThread(NULL, 0, serverSend, &client, 0, &tid); 
   if (t2 == NULL) {
    cout << "Thread Creation Error: " << WSAGetLastError() << endl;
   }
@@ -142,8 +142,8 @@ int main() {
   WaitForSingleObject(t1, INFINITE);
   WaitForSingleObject(t2, INFINITE);
 
-  closesocket(client); //Закрыть сокет
-  if (closesocket(server) == SOCKET_ERROR) { //Ошибка закрытия сокета
+  closesocket(client); 
+  if (closesocket(server) == SOCKET_ERROR) { 
    cout << "Close socket failed with error: " << WSAGetLastError() << endl;
    return -1;
   }
