@@ -26,7 +26,7 @@ void sendFile(const std::string& filePath, SOCKET socket) {
 		send(socket, buffer.data(), fileSize, 0);
 	}
 	else {
-		cout << "FUCK" << endl;
+		cout << "Panic!" << endl;
 	}
 }
 
@@ -95,7 +95,11 @@ int main() {
  
  addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //коннект к серверу (локалхост)
  addr.sin_family = AF_INET;
- cout << "\"CLIENT\"\nInput number of socket" << endl;
+ HANDLE colorConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+ SetConsoleTextAttribute(colorConsole, 3);
+ cout << "\"CLIENT\"" << endl;
+ SetConsoleTextAttribute(colorConsole, 7);
+cout<<"Input number of socket" << endl;
  int socketNumber = 0;
  std::cin >> socketNumber;
  addr.sin_port = htons(socketNumber);

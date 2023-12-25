@@ -6,7 +6,8 @@
 #include <winsock2.h> 
 #include <fstream>
 #include <vector>
-
+#include <string>
+const std::string adress = "127.0.0.1";
 
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
@@ -27,7 +28,7 @@ void sendFile(const std::string& filePath, SOCKET socket) {
 		send(socket, buffer.data(), fileSize, 0);
 	}
 	else {
-		cout << "FUCK" << endl;
+		cout << "Panic!" << endl;
 	}
 }
 
@@ -61,7 +62,7 @@ DWORD WINAPI serverReceive(LPVOID lpParam) { //Получение данных от клиента
 	  receiveFile(client);
   }
   
-  cout << "Client: " << buffer << endl; //Иначе вывести сообщение от клиента из буфера
+  cout <<"Client: " << buffer << endl; //Иначе вывести сообщение от клиента из буфера
   memset(buffer, 0, sizeof(buffer)); //Очистить буфер
  }
  return 1;
@@ -101,8 +102,12 @@ int main() {
  }
  serverAddr.sin_addr.s_addr = INADDR_ANY;
  serverAddr.sin_family = AF_INET;
- cout << "\"SERVER\"\nInput number of socket" << endl;
- int socketNumber = 0;
+ HANDLE colorConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+ SetConsoleTextAttribute(colorConsole, 3);
+ cout << "\"SERVER\""<<" ip -> "<<adress<<endl;
+ SetConsoleTextAttribute(colorConsole, 7);
+ cout<<"Input number of socket" << endl;
+ static int socketNumber = 0;
  std::cin >> socketNumber;
  serverAddr.sin_port = htons(socketNumber);
  if (bind(server, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
@@ -120,7 +125,7 @@ int main() {
  int clientAddrSize = sizeof(clientAddr); //Инициализировать адерс клиента
  if ((client = accept(server, (SOCKADDR*)&clientAddr, &clientAddrSize)) != INVALID_SOCKET) {
   //Если соединение установлено
-  cout << "Client connected!" << endl;
+  cout << "Client connected! from "<<to_string(socketNumber)<< endl;
   cout << "Now you can use our live chat application. " << "Enter \"exit\" to disconnect" <<"\nOr type \"send\" to send file from TRANZIT_DIRECTORY" << endl; //-<
 
   DWORD tid; //Идентификатор
