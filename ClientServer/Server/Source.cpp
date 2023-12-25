@@ -35,8 +35,8 @@ void receiveFile(SOCKET socket) {
     streamsize fileSize;
     recv(socket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
     vector<char> buffer(fileSize);
-    recv(socket, buffer.data(), fileSize, 0);
-    ofstream outputFile("/fileTranzit/catched.txt"/*сюда путь можно ебануть*/, std::ios::binary);
+	recv(socket, buffer.data(), fileSize, 0);
+    ofstream outputFile("./TRANZIT_DIRECTORY/received_file(CLIENT).txt", std::ios::binary);
     outputFile.write(buffer.data(), fileSize);
 
 }
@@ -57,6 +57,7 @@ DWORD WINAPI serverReceive(LPVOID lpParam) { //Получение данных от клиента
    break;
   }
   if (strcmp(buffer, "send\n") == 0) {  //Если клиент отправляет сообщение
+	  cout << "Catching file(CLIENT)";
 	  receiveFile(client);
   }
   
@@ -100,7 +101,7 @@ int main() {
  }
  serverAddr.sin_addr.s_addr = INADDR_ANY;
  serverAddr.sin_family = AF_INET;
- cout << "Input number of socket" << endl;
+ cout << "\"SERVER\"\nInput number of socket" << endl;
  int socketNumber = 0;
  std::cin >> socketNumber;
  serverAddr.sin_port = htons(socketNumber);

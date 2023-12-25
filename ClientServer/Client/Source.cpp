@@ -35,7 +35,7 @@ void receiveFile(SOCKET socket) {
 	recv(socket, reinterpret_cast<char*>(&fileSize), sizeof(fileSize), 0);
 	vector<char> buffer(fileSize);
 	recv(socket, buffer.data(), fileSize, 0);
-	ofstream outputFile("received_file.txt"/*сюда путь можно ебануть*/, std::ios::binary);
+	ofstream outputFile("./TRANZIT_DIRECTORY/received_file(SERVER).txt", std::ios::binary);
 	outputFile.write(buffer.data(), fileSize);
 
 }
@@ -53,7 +53,7 @@ DWORD WINAPI clientReceive(LPVOID lpParam) { //Получение данных от сервера
    return 1;
   }
   if (strcmp(buffer, "send\n") == 0) {  //Если клиент отправляет сообщение
-	  cout << "catching message" << endl;
+	  cout << "Catching file(SERVER)" << endl;
 	  receiveFile(server);
   }
   cout << "Server: " << buffer << endl;
@@ -75,6 +75,10 @@ DWORD WINAPI clientSend(LPVOID lpParam) { //Отправка данных на сервер
    cout << "Thank you for using the application" << endl;
    break;
   }
+  if (strcmp(buffer, "send\n") == 0) {
+	  cout << "Send file" << endl;
+	  sendFile("file.txt", server);
+  }
  }
  return 1;
 }
@@ -89,9 +93,9 @@ int main() {
   return -1;
  }
  
- addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //коннект к серверу
+ addr.sin_addr.s_addr = inet_addr("127.0.0.1"); //коннект к серверу (локалхост)
  addr.sin_family = AF_INET;
- cout << "Input number of socket" << endl;
+ cout << "\"CLIENT\"\nInput number of socket" << endl;
  int socketNumber = 0;
  std::cin >> socketNumber;
  addr.sin_port = htons(socketNumber);
