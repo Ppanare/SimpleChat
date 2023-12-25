@@ -7,6 +7,8 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include "../manch.h"
+
 const std::string adress = "127.0.0.1";
 
 #pragma comment(lib, "WS2_32.lib")
@@ -61,7 +63,6 @@ DWORD WINAPI serverReceive(LPVOID lpParam) { //Получение данных от клиента
 	  cout << "Catching file(CLIENT)";
 	  receiveFile(client);
   }
-  
   cout <<"Client: " << buffer << endl; //Иначе вывести сообщение от клиента из буфера
   memset(buffer, 0, sizeof(buffer)); //Очистить буфер
  }

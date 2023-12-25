@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
+#include "../manch.h"
 #pragma comment(lib, "WS2_32.lib")
 using namespace std;
 
