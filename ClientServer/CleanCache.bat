@@ -1,3 +1,4 @@
+RD /s /q .vs
 RD /s /q x64
 cd Client
 RD /s /q x64

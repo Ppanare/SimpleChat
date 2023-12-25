@@ -1,4 +1,4 @@
-//была задумка кодировать сообщение но честно говоря руки не дошли
+//была задумка кодировать сообщение но честно говоря руки пока что не дошли
 namespace manch {
 	std::string Encode(const std::string& input) {
 		std::string encoded;
